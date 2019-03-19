@@ -9,6 +9,7 @@ use Pnz\MattermostClient\Model\Status;
 use Pnz\MattermostClient\Model\Team\Teams;
 use Pnz\MattermostClient\Model\User\User;
 use Pnz\MattermostClient\Model\User\Users;
+use Pnz\MattermostClient\Model\AccessToken\AccessToken;
 use Psr\Http\Message\ResponseInterface;
 
 final class UsersApi extends HttpApi
@@ -308,5 +309,26 @@ final class UsersApi extends HttpApi
         $response = $this->httpGet(sprintf('/users/username/%s', $username));
 
         return $this->handleResponse($response, User::class);
+    }
+
+    /**
+     * @param string $userId
+     * @param string $description
+     * @return AccessToken|ResponseInterface
+     */
+    public function createUserAccessToken(string $userId, string $description)
+    {
+        if (empty($userId)) {
+            throw new InvalidArgumentException('UserId can not be empty');
+        }
+        if (empty($description)) {
+            throw new InvalidArgumentException('Description can not be empty');
+        }
+
+        $response = $this->httpPost(sprintf('/users/%s/tokens', $userId), [
+            'description' => $description
+        ]);
+
+        return $this->handleResponse($response, AccessToken::class);
     }
 }
