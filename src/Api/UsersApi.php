@@ -331,4 +331,20 @@ final class UsersApi extends HttpApi
 
         return $this->handleResponse($response, AccessToken::class);
     }
+
+    /**
+     * @param string $email
+     * @return Status|ResponseInterface
+     */
+    public function sendPasswordResetEmail(string $email) {
+        if (empty($email)) {
+            throw new InvalidArgumentException('Email can not be empty');
+        }
+
+        $response = $this->httpPost('/users/password/reset/send', [
+            'email' => $email
+        ]);
+
+        return $this->handleResponse($response, Status::class);
+    }
 }
